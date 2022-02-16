@@ -39,5 +39,14 @@ def word_count(my_str):
 
     return my_dic
 
+def f(b):
+    a=6
+    return a*b
+
+a=0
+print('{}' .format(f(3)))
+print('{}' .format(a))
+
+
 
 print(word_count(myStr))
