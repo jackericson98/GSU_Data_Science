@@ -19,7 +19,13 @@ class Triangle(Shape):
         super().__init__()
         self.side1 = side1
         self.side2 = side2
+        self.side3 = None
+        self.angle1 = None
+        self.angle2 = None
         self.angle3 = angle
+
+        self.area = None
+        self.perimeter = None
 
     def getVals(self):
         """Used to assign all other side and angle values for our SAS triangle
@@ -33,7 +39,6 @@ class Triangle(Shape):
         B = 180 - (A + C)
         self.side3, self.angle1, self.angle2 = c, A, B
         print("Your triangle:\nSides: {}, {}, {}\nAngles: {}, {}, {}".format(a, b, c, A, B, C))
-
 
     def area(self):
         """Used to calculate, assign, print and return the area for our triangle"""
