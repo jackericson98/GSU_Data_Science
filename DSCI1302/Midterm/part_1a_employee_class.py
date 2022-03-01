@@ -1,6 +1,4 @@
-
 class Employee:
-
     """Parameters: {Name, Year of Joining, Address, Salary, Hours Worked per Day}
         Class used to create an employee and assign work information to."""
 
@@ -11,7 +9,6 @@ class Employee:
         self.yoj = yoj
         self.adr = adr
 
-
     def getInfo(self, sal, hrs_day):
 
         """Parameters: {Salary, Hours Worked per Day}. Takes the salary and
@@ -19,7 +16,7 @@ class Employee:
 
         self.sal = sal
         self.hrs_day = hrs_day
-        print("Employee's sal is: {}" .format(self.sal))
+        print("Employee's sal is: {}".format(self.sal))
 
     def AddSal(self):
 
@@ -27,7 +24,7 @@ class Employee:
 
         if self.sal < 500:
             self.sal += 10
-        print("Employee's sal is: {}" .format(self.sal))
+        print("Employee's sal is: {}".format(self.sal))
 
     def AddWork(self):
 
@@ -35,7 +32,7 @@ class Employee:
 
         if self.hrs_day >= 6:
             self.sal += 5
-        print("Employee's salaryf is: {}" .format(self.sal))
+        print("Employee's salary is: {}".format(self.sal))
 
     def printEmployee(self):
 
@@ -43,4 +40,3 @@ class Employee:
 
         print('Employee Information:\n\n\tName:\t\tYear of Joining:\tadr:\n'
               '\t{}\t\t{}\t\t\t{}'.format(self.name, self.yoj, self.adr))
-
