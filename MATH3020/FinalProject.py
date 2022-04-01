@@ -64,7 +64,7 @@ class Network:
 
 
 # Driver code
-num_sims = 10
+num_sims = int(input("How many simulations would you like to run?"))
 
 avg = 0
 avg_arr = []
@@ -80,6 +80,7 @@ for i in range(num_sims):
 
     print("sim {} length: {}, new average = {}".format(i + 1, sim_length, avg))
 
-plt.plot(np.linspace(1, num_sims, num_sims), avg_arr)
 plt.plot(np.linspace(1, num_sims, num_sims), sim_length_arr)
+plt.plot(np.linspace(1, num_sims, num_sims), avg_arr)
+
 plt.show()
