@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 class Network:
@@ -26,25 +27,23 @@ class Network:
         return False
 
     def runSim(self, days=np.inf):
+
         self.today = 0
         if days != np.inf:
             for day in range(days):
                 self.day()
                 self.today += 1
-                print("Day: {}. {} new cases. {} Total".format(self.today, self.num_infected, self.tot_infected))
+                # print("Day: {}. {} new cases. {} Total".format(self.today, self.num_infected, self.tot_infected))
             return
 
-        while self.infected:
+        while self.tot_infected > 0:
             self.day()
             self.today += 1
-            print("Day: {}. {} new cases. {} Total".format(self.today, self.num_infected, self.tot_infected))
 
-            if self.tot_infected <= 0:
-                print("finished")
-                self.infected = False
-        return
+        return self.today
 
     def day(self):
+
         self.num_infected = 0
         self.num_cured = 0
         for comp in self.comp_list:
@@ -55,15 +54,32 @@ class Network:
                         self.tot_infected += 1
                         self.comp_list[i] = True
 
-        num_curable = min(self.tot_infected, 5)
-        while self.num_cured <= num_curable - 1:
+        while self.num_cured <= 5 and self.tot_infected > 0:
+
             rand_ndx = np.random.randint(20)
             if self.comp_list[rand_ndx]:
                 self.comp_list[rand_ndx] = False
                 self.num_cured += 1
                 self.tot_infected -= 1
 
-# Driver code
-myNet = Network(20, 1)
 
-myNet.runSim()
+# Driver code
+num_sims = 10
+
+avg = 0
+avg_arr = []
+sim_length_arr = []
+
+for i in range(num_sims):
+
+    myNet = Network(20, 1)
+    sim_length = myNet.runSim()
+    avg = (i * avg + sim_length) / (i + 1)
+    avg_arr.append(avg)
+    sim_length_arr.append(sim_length)
+
+    print("sim {} length: {}, new average = {}".format(i + 1, sim_length, avg))
+
+plt.plot(np.linspace(1, num_sims, num_sims), avg_arr)
+plt.plot(np.linspace(1, num_sims, num_sims), sim_length_arr)
+plt.show()
