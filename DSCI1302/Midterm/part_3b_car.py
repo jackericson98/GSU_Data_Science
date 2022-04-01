@@ -1,6 +1,6 @@
 import pandas as pd
 
-cars_raw = pd.read_csv("part_3_data/car.csv")
+cars_raw = pd.read_csv("data/car.csv")
 
 
 # Replace each text value for a meaningful integer equivalent for each column in the data.

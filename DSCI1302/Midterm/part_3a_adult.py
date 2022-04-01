@@ -2,7 +2,7 @@
 import pandas as pd
 
 
-adults = pd.read_csv("part_3_data/adult.csv")
+adults = pd.read_csv("data/adult.csv")
 
 lower_class = adults[adults["class"] == " <=50K"]
 upper_class = adults[adults["class"] == " >50K"]

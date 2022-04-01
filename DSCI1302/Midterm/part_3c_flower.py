@@ -1,6 +1,6 @@
 import pandas as pd
 
-iris = pd.read_csv("part_3_data/iris.csv")
+iris = pd.read_csv("data/iris.csv")
 
 setosa = iris[iris["Flower_class"] == "Iris-setosa"]
 versicolor = iris[iris["Flower_class"] == "Iris-versicolor"]
