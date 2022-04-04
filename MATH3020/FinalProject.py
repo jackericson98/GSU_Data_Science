@@ -37,6 +37,25 @@ class Simulation:
         # Show the plot
         plt.show()
 
+    # Define our choices method
+    def choices(self):
+
+        changes = input("Which of the following would you like to change:\n"
+                        "1. Number of computers    2. Infection rate    3. Infected computers\n").lower()
+        myChanges = changes.split(', ')
+        num_comps = ["number of computers", '1.', '1', 'computers']
+        infection_rate = ['infection rate', 'infection', '2', '2.']
+        infected_computers = ['infected computers', 'number infected', 'infected', '3.', '3']
+
+        if any(x in num_comps for x in myChanges):
+            self.num_comps = int(input("How many computers?"))
+
+        if any(x in infection_rate for x in myChanges):
+            self.infect_prob = float(input("What infection rate?"))
+
+        if any(x in infected_computers for x in myChanges):
+            self.init_infected = int(input("How many infected computers?"))
+
     # Method to simulate a day
     def day(self):
 
@@ -73,8 +92,15 @@ class Simulation:
     # Method for running the simulation
     def run(self):
 
-        # Ask the user how many simulations they want to run
-        num_sims = int(input("How many simulations would you like to run?"))
+        choices = input("Would you like to change any of the following settings for your simulation? (y/n):\n"
+                        "\nNumber of computers = {}, Infection Rate = {}, Number of infected computers = {}\n"
+                        .format(self.num_comps, self.infect_prob, self.init_infected))
+
+        if choices.lower() == 'y':
+            self.choices()
+        # set the number of simulations to run
+
+        num_sims = 10000
 
         # Set our average back to 0 and reset our data arrays
         avg = 0
@@ -104,7 +130,7 @@ class Simulation:
             avg_arr.append(avg)
 
             # Update our running print statement to show the current sim number, current sim length & running average
-            print("\rSimulation %8d length = %3d days, average = %3f days per simulation" % (i + 1, days, avg),
+            print("\rSimulation #: %6d, length = %3d days, average = %3f days per simulation" % (i + 1, days, avg),
                   end='')
 
         # Plot the results
