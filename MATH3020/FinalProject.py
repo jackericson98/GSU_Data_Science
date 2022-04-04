@@ -11,7 +11,7 @@ class Simulation:
     # the maximum number of computers that can be cured per day
     def __init__(self, num_comps=20, num_infected=1, infect_prob=.09, max_cure_pd=5):
 
-        # Set variables
+        # Set input variables
         self.tot_infected = num_infected
         self.infect_prob = infect_prob
         self.max_cure_pd = max_cure_pd
@@ -22,60 +22,59 @@ class Simulation:
         self.infected = self.comp_list[0]  # Boolean value indicating network infection
         self.infected_list = list(range(0, num_infected, 1))  # List holding infected indices
 
-        # Variables for each day of a simulation
-        self.today = 0  # Day counter for simulations
-        self.new_infected = 0  # number of infected people in the current sim
-        self.new_cured = 0  # number of cured people in the current sim
-
     # Method to simulate a day
     def day(self):
 
         # Resetting the daily counter of infected and cured computers
-        self.new_infected = 0
-        self.new_cured = 0
-
+        new_infected = 0
+        new_cured = 0
         self.infected_list = []
+        self.tot_infected = 0
 
+        # Create a list of indices for infected computers our computer list
         for num in range(len(self.comp_list)):
             if self.comp_list[num]:
                 self.infected_list.append(num)
+                self.tot_infected += 1
 
-        # Infection process. Go through the computer list and look for infected computers
+        # Infection process:
+        # Go through the infected computer list
         for i in range(len(self.infected_list)):
+            # For each infected computer try to infect all other non-infected computers
             for num in range(len(self.comp_list)):
-                # num = int(num1)
+                # If the computer isn't already infected and our random number is larger than our infected probability
+                # threshold infect that computer
                 if not self.comp_list[num] and np.random.rand(1) < self.infect_prob:
-                    # If we get a match add one to relevant counters and change value in computer list
-                    self.new_infected += 1
+                    # Add one to our new infected and total infected
+                    new_infected += 1
                     self.tot_infected += 1
+                    # Change the computer list entry for this computer to True (i.e. infected)
                     self.comp_list[num] = True
                     self.infected_list.append(num)
 
-        # Cure process. Keep trying curing the maximum number of cured computers per day is reached or all are curred
-
-        while self.new_cured <= self.max_cure_pd and self.tot_infected > 0:
-            # Choose a random index in our
-            rand_ndx = np.random.randint(len(self.infected_list))
-            infected_index = self.infected_list[rand_ndx]
-            self.comp_list[infected_index] = False
-            self.infected_list.pop(rand_ndx)
-            self.new_cured += 1
+        # Cure process:
+        # Keep curing computers until we reach the desired number of cured computers or all computers are healthy
+        while new_cured <= self.max_cure_pd and self.tot_infected > 0:
+            # Choose a random index from our infected computer list, remove that index (pop) and cure the
+            # corresponding computer (i.e. set it's value to False)
+            self.comp_list[self.infected_list.pop(np.random.randint(len(self.infected_list)))] = False
+            # Increment our tallies accordingly
+            new_cured += 1
             self.tot_infected -= 1
 
-    def run(self, days=np.inf):
+    # Method for running the simulation
+    def run(self):
 
-        self.today = 0
-        if days != np.inf:
-            for day in range(days):
-                self.day()
-                self.today += 1
-            return
-
+        # Set the day counter to 0
+        days = 0
+        # Keep running days until all computers are cured
         while self.tot_infected > 0:
+            # Call the day method
             self.day()
-            self.today += 1
+            # Add a day to our day counter
+            days += 1
 
-        return self.today
+        return days
 
 
 # Driver code
