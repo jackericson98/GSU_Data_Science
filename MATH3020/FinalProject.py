@@ -8,7 +8,7 @@ class Simulation:
 
     # Initializing network with number of computers, number of infected, probability of infecting another computer, and
     # the maximum number of computers that can be cured per day
-    def __init__(self, num_comps=20, num_infected=1, infect_prob=.09, max_cure_pd=8, num_sims=10000):
+    def __init__(self, num_comps=20, num_infected=1, infect_prob=.09, max_cure_pd=5, num_sims=10000):
 
         # Set input variables
         self.init_infected = num_infected
@@ -30,7 +30,7 @@ class Simulation:
         plt.plot(np.linspace(1, num_sims, num_sims), avg_arr, color='r', linewidth=2.0)
 
         # Plot attributes
-        plt.title("Time to clear viruses in days. Average = %3.5f" % avg)
+        plt.title("Days to clear network of viruses. Average = %3.5f" % avg)
         plt.xlabel("Simulation")
         plt.ylabel("Time (days)")
         plt.legend(["Average", "Time"])
@@ -55,15 +55,19 @@ class Simulation:
         infection_rate = ['infection rate', 'infection', '3', '3.']
         num_sims = ["number of simulations", 'num sims', '4.', '4']
 
+        # Check if user indicated to change the number of computers
         if any(x in num_comps for x in my_changes):
             self.num_comps = int(input("How many computers would you like to simulate?"))
 
+        # Check if user indicated to change the number of infected computers
         if any(x in infected_computers for x in my_changes):
             self.init_infected = int(input("How many infected computers would you like to start with?"))
 
+        # Check if user indicated to change the infection rate
         if any(x in infection_rate for x in my_changes):
             self.infect_prob = float(input("What is the infection rate you would like to test?"))
 
+        # Check if user indicated to change the number of simulations
         if any(x in num_sims for x in my_changes):
             self.num_sims = int(input("How many simulations would you like to run?"))
 
@@ -103,12 +107,12 @@ class Simulation:
     # Method for running the simulation
     def run(self):
 
-        choices = input("Would you like to change any of the following settings for your simulation? (y/n):\n"
-                        "\nNumber of computers = {}, Number of infected computers = {}, Infection Rate = {}, "
-                        "Number of simulations = {}\n"
-                        .format(self.num_comps, self.init_infected, self.infect_prob, self.num_sims))
+        choices = input("\n1. Number of computers = {}\n2. Initially infected computers = {}\n3. Infection Rate = {}\n"
+                        "4. Number of simulations = {}\n5. Number of computers repaired daily = {}\n\n"
+                        "Would you like to change any of the above settings for your simulation? (y/n):"
+                        .format(self.num_comps, self.init_infected, self.infect_prob, self.num_sims, self.max_cure_pd))
 
-        if choices.lower() == 'y':
+        if choices.lower() != 'n':
             self.choices()
 
         # Set our average back to 0 and reset our data arrays
