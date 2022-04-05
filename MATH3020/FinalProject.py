@@ -8,13 +8,14 @@ class Simulation:
 
     # Initializing network with number of computers, number of infected, probability of infecting another computer, and
     # the maximum number of computers that can be cured per day
-    def __init__(self, num_comps=20, num_infected=1, infect_prob=.09, max_cure_pd=5):
+    def __init__(self, num_comps=20, num_infected=1, infect_prob=.09, max_cure_pd=8, num_sims=10000):
 
         # Set input variables
         self.init_infected = num_infected
         self.infect_prob = infect_prob
         self.max_cure_pd = max_cure_pd
         self.num_comps = num_comps
+        self.num_sims = num_sims
 
         # List of our computers: Boolean list, whether the system is infected or not: Bool
         self.comp_list = []
@@ -40,21 +41,31 @@ class Simulation:
     # Define our choices method
     def choices(self):
 
+        # Ask the user if they want to make any changes with the simulation
         changes = input("Which of the following would you like to change:\n"
-                        "1. Number of computers    2. Infection rate    3. Infected computers\n").lower()
-        myChanges = changes.split(', ')
+                        "1. Number of computers    2. Infected computers    3. Infection Rate    "
+                        "4. Number of simulations\n").lower()
+
+        # Create a list of changes from users input string
+        my_changes = changes.split(', ')
+
+        # Input pools for each
         num_comps = ["number of computers", '1.', '1', 'computers']
-        infection_rate = ['infection rate', 'infection', '2', '2.']
-        infected_computers = ['infected computers', 'number infected', 'infected', '3.', '3']
+        infected_computers = ['infected computers', 'number infected', 'infected', '2.', '2']
+        infection_rate = ['infection rate', 'infection', '3', '3.']
+        num_sims = ["number of simulations", 'num sims', '4.', '4']
 
-        if any(x in num_comps for x in myChanges):
-            self.num_comps = int(input("How many computers?"))
+        if any(x in num_comps for x in my_changes):
+            self.num_comps = int(input("How many computers would you like to simulate?"))
 
-        if any(x in infection_rate for x in myChanges):
-            self.infect_prob = float(input("What infection rate?"))
+        if any(x in infected_computers for x in my_changes):
+            self.init_infected = int(input("How many infected computers would you like to start with?"))
 
-        if any(x in infected_computers for x in myChanges):
-            self.init_infected = int(input("How many infected computers?"))
+        if any(x in infection_rate for x in my_changes):
+            self.infect_prob = float(input("What is the infection rate you would like to test?"))
+
+        if any(x in num_sims for x in my_changes):
+            self.num_sims = int(input("How many simulations would you like to run?"))
 
     # Method to simulate a day
     def day(self):
@@ -93,14 +104,12 @@ class Simulation:
     def run(self):
 
         choices = input("Would you like to change any of the following settings for your simulation? (y/n):\n"
-                        "\nNumber of computers = {}, Infection Rate = {}, Number of infected computers = {}\n"
-                        .format(self.num_comps, self.infect_prob, self.init_infected))
+                        "\nNumber of computers = {}, Number of infected computers = {}, Infection Rate = {}, "
+                        "Number of simulations = {}\n"
+                        .format(self.num_comps, self.init_infected, self.infect_prob, self.num_sims))
 
         if choices.lower() == 'y':
             self.choices()
-        # set the number of simulations to run
-
-        num_sims = 10000
 
         # Set our average back to 0 and reset our data arrays
         avg = 0
@@ -108,7 +117,7 @@ class Simulation:
         sim_length_arr = []
 
         # Run the number of simulations specified
-        for i in range(num_sims):
+        for i in range(self.num_sims):
 
             # Reset our lists for each simulation
             self.comp_list = [True] * self.init_infected + [False] * (self.num_comps - self.init_infected)
@@ -134,8 +143,9 @@ class Simulation:
                   end='')
 
         # Plot the results
-        self.plot(num_sims, avg, sim_length_arr, avg_arr)
+        self.plot(self.num_sims, avg, sim_length_arr, avg_arr)
 
 
 # Driver code
-Simulation().run()
+mySim = Simulation()
+mySim.run()
