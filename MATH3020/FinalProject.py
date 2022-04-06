@@ -10,14 +10,14 @@ class Simulation:
 
     # Initializing network with number of computers, number of infected, probability of infecting another computer, and
     # the maximum number of computers that can be cured per day
-    def __init__(self, num_comps=20, num_infected=1, infect_prob=.1, num_sims=10000, max_cure_pd=5):
+    def __init__(self, num_comps=20, num_infected=1, infect_prob=.1, num_sims=10000, repaired_day=5):
 
         # Set input variables
+        self.num_comps = num_comps
         self.init_infected = num_infected
         self.infect_prob = infect_prob
-        self.max_cure_pd = max_cure_pd
-        self.num_comps = num_comps
         self.num_sims = num_sims
+        self.repaired_day = repaired_day
 
         # List of our computers: Boolean list, whether the system is infected or not: Bool
         self.comp_list = []
@@ -49,7 +49,7 @@ class Simulation:
                         "computers repaired daily = {}\n\nWould you like to change any of the above settings? If so, "
                         "which setting(s)? (use numbers separated by commas or 'all') Type 'n' if not.\n"
                         .format(self.num_comps, self.init_infected, self.infect_prob, self.num_sims,
-                                self.max_cure_pd)).lower()
+                                self.repaired_day)).lower()
 
         # If user inputs 'y' ask them which settings they want to change
         if choices == 'y':
@@ -82,7 +82,7 @@ class Simulation:
                 elif i == 3:
                     self.num_sims = int(input(inputs[i]))
                 elif i == 4:
-                    self.max_cure_pd = int(input(inputs[i]))
+                    self.repaired_day = int(input(inputs[i]))
                 else:
                     return
             return
@@ -106,7 +106,7 @@ class Simulation:
                 elif int(choice) == 4:
                     self.num_sims = int(input(inputs[int(choice) - 1]))
                 elif int(choice) == 5:
-                    self.max_cure_pd = int(input(inputs[int(choice) - 1]))
+                    self.repaired_day = int(input(inputs[int(choice) - 1]))
 
                 choice_list.pop(0)
 
@@ -127,11 +127,13 @@ class Simulation:
             # For each infected computer try to infect all other non-infected computers
             for num in range(len(self.comp_list)):
 
-                # Add one to our new infected and total infected
-                if self.comp_list[num] or np.random.rand(1) >= self.infect_prob - 0.01:  # ...rand(1) [0.00, 0.99]
+                # If the computer is already infected or a random number between 0 and 0.99 is larger than our set
+                # infection threshold move to the next step in the loop
+                if self.comp_list[num] or np.random.rand(1) >= self.infect_prob:
                     continue
 
-                # Change the computer list entry for this computer to True (i.e. infected)
+                # Change the computer list entry for this computer to True (i.e. infected) and add it's index to the
+                # infected list
                 self.comp_list[num] = True
                 self.infected_list.append(num)
 
@@ -140,12 +142,11 @@ class Simulation:
         cured = 0
 
         # Keep curing computers until we reach the desired number of cured computers or all computers are healthy
-        while cured <= self.max_cure_pd and len(self.infected_list) > 0:
-            # Choose a random index from our infected computer list, remove that index (pop) and cure the
-            # corresponding computer (i.e. set it's value to False)
-            self.comp_list[self.infected_list.pop(np.random.randint(len(self.infected_list)))] = False
+        while cured <= self.repaired_day and len(self.infected_list) > 0:
 
-            # Increment our tallies accordingly
+            # Choose a random index from our infected computer list, remove that index (pop) and cure the
+            # corresponding computer (i.e. set it's value to False) and increment our tally
+            self.comp_list[self.infected_list.pop(np.random.randint(len(self.infected_list)))] = False
             cured += 1
 
     # Method for running the simulation
@@ -155,8 +156,8 @@ class Simulation:
 
         # Set our average back to 0 and reset our data arrays
         avg = 0
-        avg_arr = []
         sim_length_arr = []
+        avg_arr = []
 
         # Run the number of simulations specified
         for i in range(self.num_sims):
@@ -172,14 +173,14 @@ class Simulation:
                 self.day()
                 days += 1
 
+                # Update running print statement to show the current sim number, current sim length & running average
+                print("\rSimulation #: %6d, length = %3d days, average = %3f days per simulation" % (i + 1, days, avg),
+                      end='')
+
             # Update our data
             sim_length_arr.append(days)
             avg = (i * avg + days) / (i + 1)
             avg_arr.append(avg)
-
-            # Update our running print statement to show the current sim number, current sim length & running average
-            print("\rSimulation #: %6d, length = %3d days, average = %3f days per simulation" % (i + 1, days, avg),
-                  end='')
 
         # Plot the results
         self.plot(avg, sim_length_arr, avg_arr)
@@ -191,5 +192,5 @@ class Simulation:
 
 
 # Driver code
-mySim = Simulation(200, 1, 0.1, 10, 50)
+mySim = Simulation()
 mySim.run()
