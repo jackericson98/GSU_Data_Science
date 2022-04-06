@@ -25,17 +25,22 @@ class Simulation:
     def plot(self, avg, sim_length_arr, avg_arr, num_infected_list):
 
         # Plot the number of days for each simulation to run
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 5))
         sims = np.linspace(1, self.num_sims, self.num_sims)
-        plt.scatter(sims, sim_length_arr)
-        plt.plot(sims, avg_arr, color='r', linewidth=2.0)
-        plt.scatter(sims, num_infected_list, color='k', marker='x')
+        ax1.scatter(sims, sim_length_arr)
+        ax1.plot(sims, avg_arr, color='r', linewidth=2.0)
+        ax2.scatter(sims, num_infected_list, color='k', marker='x')
 
         # Plot attributes
-        plt.title("%i Simulated Network Infections" % self.num_sims)
-        plt.xlabel("Simulation #")
-        plt.ylabel("Time to clear network (days)")
-        plt.legend(["Average", "Time per sim", "Number of infected computers"])
-        plt.text(1, 1, "Average = %3.5f" % avg)
+        ax1.set_xlabel("Simulation #")
+        ax1.set_ylabel("Time to clear network (days)")
+        ax2.set_xlabel("Simulation #")
+        ax2.set_ylabel("# of computers")
+        ax1.legend(["Average", "Time per sim", "Number of infected computers"])
+        ax1.set_title("%i Simulated Network Infections" % self.num_sims)
+        ax2.set_title("Number of computers that have been infected at least once")
+        plt.tight_layout()
+        #plt.text(1, 1, "Average = %3.5f" % avg)
 
         # Show the plot
         plt.show()
