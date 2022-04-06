@@ -1,4 +1,6 @@
 # Importing packages
+from typing import List
+
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -8,7 +10,7 @@ class Simulation:
 
     # Initializing network with number of computers, number of infected, probability of infecting another computer, and
     # the maximum number of computers that can be cured per day
-    def __init__(self, num_comps=20, num_infected=1, infect_prob=.09, max_cure_pd=5, num_sims=10000):
+    def __init__(self, num_comps=20, num_infected=1, infect_prob=.1, max_cure_pd=5, num_sims=10000):
 
         # Set input variables
         self.init_infected = num_infected
@@ -40,61 +42,78 @@ class Simulation:
     # Define our choices method
     def choices(self):
 
-        input_found = False
-
         # Ask the user if they want to make any changes with the simulation
-        choices = input("\n Default settings: \n    1. Number of computers = {}\n    2. Initially infected computers"
+        choices = input("\n Current settings: \n    1. Number of computers = {}\n    2. Initially infected computers"
                         " = {}\n    3. Infection Rate = {}\n    4. Number of simulations = {}\n    5. Number of "
                         "computers repaired daily = {}\n\nWould you like to change any of the above settings? If so, "
-                        "which setting(s)? (use numbers separated by commas or 'all') Type 'n' if not.\n\n"
+                        "which setting(s)? (use numbers separated by commas or 'all') Type 'n' if not.\n"
                         .format(self.num_comps, self.init_infected, self.infect_prob, self.num_sims,
-                                self.max_cure_pd)).lower()  #
+                                self.max_cure_pd)).lower()
 
-        if choices == 'n':
-            input_found = True
-
-        elif choices == 'y':
+        if choices == 'y':
             choices = input("Which setting(s)? (use numbers separated by commas or 'all')\n")
 
         # Create a list of changes from users input string
-        choice_list = choices.split(',')  # Splits by space comma space, comma space or comma
+        choice_list = choices.replace(" ", "").split(',')  # Replaces spaces and splits at the commas
 
-        # Input pools for each
-        num_comps_keys = ['1.', '1', ' 1.', ' 1', 'all']
-        infected_computers_keys = ['2.', '2', ' 2.', ' 2', 'all']
-        infection_rate_keys = ['3', '3.', ' 3.', ' 3', 'all']
-        num_sims_keys = ['4.', '4', ' 4.', ' 4', 'all']
-        mc_pd_keys = ['5', '5.', ' 5.', ' 5', 'all']
+        # List of request that can be called by index
+        inputs = ["1. Number of computers?\n",
+                  "2. Initially infected computers?\n",
+                  "3. Infection rate?\n",
+                  "4. Number of simulations?\n",
+                  "5. Number of computers repaired daily?\n"]
 
-        # Check if user indicated to change the number of computers
-        if any(x in num_comps_keys for x in choice_list):
-            input_found = True
-            self.num_comps = int(input("1. How many computers would you like to simulate?\n"))
+        # If the input is 'n' exit
+        if choice_list[0].lower() == 'n':
+            return
 
-        # Check if user indicated to change the number of infected computers
-        if any(x in infected_computers_keys for x in choice_list):
-            input_found = True
-            self.init_infected = int(input("2. How many infected computers would you like to start with?\n"))
+        # All is in the choice list we go through the entire list of settings
+        elif choice_list[0] == 'all':
+            for i in range(len(inputs)):
 
-        # Check if user indicated to change the infection rate
-        if any(x in infection_rate_keys for x in choice_list):
-            input_found = True
-            self.infect_prob = float(input("3. What is the infection rate you would like to test?\n"))
+                if i == 0:
+                    self.num_comps = float(input(inputs[i]))
+                elif i == 1:
+                    self.init_infected = float(input(inputs[i]))
+                elif i == 2:
+                    self.infect_prob = float(input(inputs[i]))
+                elif i == 3:
+                    self.num_sims = float(input(inputs[i]))
+                elif i == 4:
+                    self.num_sims = float(input(inputs[i]))
+                else:
+                    return
+            return
 
-        # Check if user indicated to change the number of simulations
-        if any(x in num_sims_keys for x in choice_list):
-            input_found = True
-            self.num_sims = int(input("4. How many simulations would you like to run?\n"))
+        # Go through all of the settings that the user requested be changed
+        for i in range(len(choice_list)):
 
-        # Check if user indicated to change the number of repaired computers per day
-        if any(x in mc_pd_keys for x in choice_list):
-            input_found = True
-            self.max_cure_pd = int(input("5. How many repaired computers per day?\n"))
+            # Set our choice to be the first item in the choice list
+            choice = choice_list[0]
 
-        # Catch all other
-        if not input_found:
-            print("\nSorry \"{}\" is not a valid input. Please try again. \n".format(choices))
-            self.choices()
+            # If the choice is a digit and less than the size of our settings list go through the current input and
+            # remove it from the choice list
+            if choice.isdigit() and i <= len(inputs) - 1 and int(choice) <= len(inputs):
+
+                if i == 0:
+                    self.num_comps = float(input(inputs[int(choice)]))
+                elif i == 1:
+                    self.init_infected = float(input(inputs[int(choice)]))
+                elif i == 2:
+                    self.infect_prob = float(input(inputs[int(choice)]))
+                elif i == 3:
+                    self.num_sims = float(input(inputs[int(choice)]))
+                elif i == 4:
+                    self.num_sims = float(input(inputs[int(choice)]))
+
+                choice_list.pop(0)
+
+            # If the item is not a valid entry ask if the user wants to continue anyways
+            else:
+                cont = input("\"{}\" is not a valid entry at this point. Would you like to continue anyways? (y/n)"
+                             .format(choice_list.pop(0))).lower()
+                if cont.lower() == 'n':
+                    self.choices()
 
     # Method to simulate a day
     def day(self):
@@ -107,7 +126,7 @@ class Simulation:
             for num in range(len(self.comp_list)):
 
                 # Add one to our new infected and total infected
-                if self.comp_list[num] or np.random.rand(1) >= self.infect_prob:
+                if self.comp_list[num] or np.random.rand(1) >= self.infect_prob - 0.01:  # ...rand(1) [0.00, 0.99]
                     continue
 
                 # Change the computer list entry for this computer to True (i.e. infected)
