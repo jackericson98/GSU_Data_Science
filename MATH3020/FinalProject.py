@@ -22,17 +22,19 @@ class Simulation:
         self.infected_list = []
 
     # Define our plot method. Since it does not call on the object we declare it as a static method
-    def plot(self, avg, sim_length_arr, avg_arr):
+    def plot(self, avg, sim_length_arr, avg_arr, num_infected_list):
 
         # Plot the number of days for each simulation to run
-        plt.scatter(np.linspace(1, self.num_sims, self.num_sims), sim_length_arr)
-        plt.plot(np.linspace(1, self.num_sims, self.num_sims), avg_arr, color='r', linewidth=2.0)
+        sims = np.linspace(1, self.num_sims, self.num_sims)
+        plt.scatter(sims, sim_length_arr)
+        plt.plot(sims, avg_arr, color='r', linewidth=2.0)
+        plt.scatter(sims, num_infected_list, color='k', marker='x')
 
         # Plot attributes
         plt.title("%i Simulated Network Infections" % self.num_sims)
         plt.xlabel("Simulation #")
         plt.ylabel("Time to clear network (days)")
-        plt.legend(["Average", "Time"])
+        plt.legend(["Average", "Time per sim", "Number of infected computers"])
         plt.text(1, 1, "Average = %3.5f" % avg)
 
         # Show the plot
@@ -156,6 +158,7 @@ class Simulation:
         avg = 0
         sim_length_arr = []
         avg_arr = []
+        num_infected_list = []
 
         # Run the number of simulations specified
         for i in range(self.num_sims):
@@ -165,8 +168,15 @@ class Simulation:
             self.infected_list = list(range(0, self.init_infected, 1))
             days = 0
 
+            been_infected = []
             # Keep running days until all computers are cured
             while len(self.infected_list) > 0 and days <= 10000:
+
+                # Record what computers have been infected
+                for x in self.infected_list:
+                    if x not in been_infected:
+                        been_infected.append(x)
+
                 # Call the day method and add a day to our counter
                 self.day()
                 days += 1
@@ -175,13 +185,16 @@ class Simulation:
                 print("\rSimulation #: %6d, length = %3d days, average = %3f days per simulation" % (i + 1, days, avg),
                       end='')
 
-            # Update our data
+            # Update our length data
             sim_length_arr.append(days)
             avg = (i * avg + days) / (i + 1)
             avg_arr.append(avg)
 
+            # Update our number of infected computers data
+            num_infected_list.append(len(been_infected))
+
         # Plot the results
-        self.plot(avg, sim_length_arr, avg_arr)
+        self.plot(avg, sim_length_arr, avg_arr, num_infected_list)
 
         # Ask the user if they would like to run another simulation.
         cont = input("\n\nWould you like to run another simulation?\n")
