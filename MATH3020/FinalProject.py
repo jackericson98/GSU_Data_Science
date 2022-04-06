@@ -158,7 +158,11 @@ class Simulation:
         avg = 0
         sim_length_arr = []
         avg_arr = []
+
+        # Set our number of infected computers per simulation and related averages back to 0
         num_infected_list = []
+        num_all_infected = 0  # The number of times all computer become infected
+        exp_num_comps = 0
 
         # Run the number of simulations specified
         for i in range(self.num_sims):
@@ -192,9 +196,18 @@ class Simulation:
 
             # Update our number of infected computers data
             num_infected_list.append(len(been_infected))
+            if len(been_infected) == self.num_comps:
+                num_all_infected += 1
+            exp_num_comps = (i * exp_num_comps + len(been_infected)) / (i + 1)
+
+        every_prob = num_all_infected/self.num_sims
 
         # Plot the results
         self.plot(avg, sim_length_arr, avg_arr, num_infected_list)
+
+        print("\n\nResults:\n\nExpected time to remove virus = {} days\nProbability that each computer gets infected "
+              "= {}\nExpected number of infected computers = {}".format(round(avg, 5), round(every_prob, 5),
+                                                                        round(exp_num_comps, 5)))
 
         # Ask the user if they would like to run another simulation.
         cont = input("\n\nWould you like to run another simulation?\n")
