@@ -1,6 +1,4 @@
 # Importing packages
-from typing import List
-
 import numpy as np
 import matplotlib.pyplot as plt
 
