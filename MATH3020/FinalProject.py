@@ -10,7 +10,7 @@ class Simulation:
 
     # Initializing network with number of computers, number of infected, probability of infecting another computer, and
     # the maximum number of computers that can be cured per day
-    def __init__(self, num_comps=20, num_infected=1, infect_prob=.1, max_cure_pd=5, num_sims=10000):
+    def __init__(self, num_comps=20, num_infected=1, infect_prob=.1, num_sims=10000, max_cure_pd=5):
 
         # Set input variables
         self.init_infected = num_infected
@@ -31,10 +31,11 @@ class Simulation:
         plt.plot(np.linspace(1, self.num_sims, self.num_sims), avg_arr, color='r', linewidth=2.0)
 
         # Plot attributes
-        plt.title("Days to clear network of viruses. Average = %3.5f" % avg)
-        plt.xlabel("Simulation")
-        plt.ylabel("Time (days)")
+        plt.title("%i Simulated Network Infections" % self.num_sims)
+        plt.xlabel("Simulation #")
+        plt.ylabel("Time to clear network (days)")
         plt.legend(["Average", "Time"])
+        plt.text(1, 1, "Average = %3.5f" % avg)
 
         # Show the plot
         plt.show()
@@ -50,6 +51,7 @@ class Simulation:
                         .format(self.num_comps, self.init_infected, self.infect_prob, self.num_sims,
                                 self.max_cure_pd)).lower()
 
+        # If user inputs 'y' ask them which settings they want to change
         if choices == 'y':
             choices = input("Which setting(s)? (use numbers separated by commas or 'all')\n")
 
@@ -70,24 +72,24 @@ class Simulation:
         # All is in the choice list we go through the entire list of settings
         elif choice_list[0] == 'all':
             for i in range(len(inputs)):
-
+                # Go through all settings
                 if i == 0:
-                    self.num_comps = float(input(inputs[i]))
+                    self.num_comps = int(input(inputs[i]))
                 elif i == 1:
-                    self.init_infected = float(input(inputs[i]))
+                    self.init_infected = int(input(inputs[i]))
                 elif i == 2:
                     self.infect_prob = float(input(inputs[i]))
                 elif i == 3:
-                    self.num_sims = float(input(inputs[i]))
+                    self.num_sims = int(input(inputs[i]))
                 elif i == 4:
-                    self.num_sims = float(input(inputs[i]))
+                    self.max_cure_pd = int(input(inputs[i]))
                 else:
                     return
             return
 
         # Go through all of the settings that the user requested be changed
         for i in range(len(choice_list)):
-
+            print(choice_list)
             # Set our choice to be the first item in the choice list
             choice = choice_list[0]
 
@@ -95,16 +97,16 @@ class Simulation:
             # remove it from the choice list
             if choice.isdigit() and i <= len(inputs) - 1 and int(choice) <= len(inputs):
 
-                if i == 0:
-                    self.num_comps = float(input(inputs[int(choice)]))
-                elif i == 1:
-                    self.init_infected = float(input(inputs[int(choice)]))
-                elif i == 2:
-                    self.infect_prob = float(input(inputs[int(choice)]))
-                elif i == 3:
-                    self.num_sims = float(input(inputs[int(choice)]))
-                elif i == 4:
-                    self.num_sims = float(input(inputs[int(choice)]))
+                if int(choice) == 1:
+                    self.num_comps = int(input(inputs[int(choice) - 1]))
+                elif int(choice) == 2:
+                    self.init_infected = int(input(inputs[int(choice) - 1]))
+                elif int(choice) == 3:
+                    self.infect_prob = float(input(inputs[int(choice) - 1]))
+                elif int(choice) == 4:
+                    self.num_sims = int(input(inputs[int(choice) - 1]))
+                elif int(choice) == 5:
+                    self.max_cure_pd = int(input(inputs[int(choice) - 1]))
 
                 choice_list.pop(0)
 
@@ -165,7 +167,7 @@ class Simulation:
             days = 0
 
             # Keep running days until all computers are cured
-            while len(self.infected_list) > 0 and days <= 1000000:
+            while len(self.infected_list) > 0 and days <= 10000:
                 # Call the day method and add a day to our counter
                 self.day()
                 days += 1
@@ -189,5 +191,5 @@ class Simulation:
 
 
 # Driver code
-mySim = Simulation()
+mySim = Simulation(200, 1, 0.1, 10, 50)
 mySim.run()
