@@ -31,6 +31,8 @@ class Simulation:
         # Plot the number of days for each simulation to run
         fig, (ax0, ax1, ax2) = plt.subplots(1, 3, figsize=(15, 5))
         sims = np.linspace(1, self.num_sims, self.num_sims)
+
+        # ax0 = Text box subplot
         ax0.text(0, 0.95, "Results:", fontsize=15)
         ax0.text(0.1, 0.70, "\nExpected time to remove virus = {} days\n\nProbability that each computer gets infected "
                             "= {}\n\nExpected number of infected computers = {}".format(round(avg, 5),
@@ -43,24 +45,28 @@ class Simulation:
                             .format(self.num_comps, self.init_infected, self.infect_prob, self.num_sims,
                                     self.repaired_day),
                  fontsize=10)
-
         ax0.set_axis_off()
-        ax1.scatter(sims, sim_length_arr)
-        ax1.plot(sims, avg_arr, color='r', linewidth=2.0)
-        ax2.scatter(sims, num_infected_list, color='k', marker='x')
 
-        # Plot attributes
+        # ax1: Simulation Plot
+        ax1.plot(sims, avg_arr, c='grey', linewidth=2.0, linestyle='--')
+        ax1.scatter(sims, sim_length_arr, c='k')
+        # Set plot attributes
         ax1.set_xlabel("Simulation #")
         ax1.set_ylabel("Time to clear network (days)")
-        ax2.set_xlabel("Simulation #")
-        ax2.set_ylabel("# of computers")
         ax1.legend(["Average", "Time per sim", "Number of infected computers"])
         ax1.set_title("%i Simulated Network Infections" % self.num_sims)
-        ax2.set_title("Number of computers that have been infected at least once")
         if max(sim_length_arr) - min(sim_length_arr) > 1000:
             ax1.set_yscale('log')
+
+        # Infected computers plot
+        ax2.scatter(sims, num_infected_list, marker='.', c='k')
+        # Set plot attributes
+        ax2.set_xlabel("Simulation #")
+        ax2.set_ylabel("# of computers")
+        ax2.set_title("Number of computers that have been infected at least once")
+
+        # Spread the subplots
         plt.tight_layout()
-        # plt.text(1, 1, "Average = %3.5f" % avg)
 
         # Show the plot
         plt.show()
@@ -227,8 +233,6 @@ class Simulation:
 
         # Plot the results
         self.plot(avg, sim_length_arr, avg_arr, num_infected_list, every_prob, exp_num_comps)
-
-        print()
 
         # Ask the user if they would like to run another simulation.
         cont = input("\n\nWould you like to run another simulation?\n")
