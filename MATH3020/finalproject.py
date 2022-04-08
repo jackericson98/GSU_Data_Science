@@ -49,7 +49,7 @@ class Simulation:
 
         # ax1: Simulation Plot
         ax1.plot(sims, avg_arr, c='grey', linewidth=2.0, linestyle='--')
-        ax1.scatter(sims, sim_length_arr, c='k')
+        ax1.scatter(sims, sim_length_arr, marker ='.', c='k')
         # Set plot attributes
         ax1.set_xlabel("Simulation #")
         ax1.set_ylabel("Time to clear network (days)")
