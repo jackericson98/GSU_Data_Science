@@ -51,7 +51,7 @@ class Simulation:
         ax1.plot(sims, avg_arr, c='grey', linewidth=2.0, linestyle='--')
         ax1.scatter(sims, sim_length_arr, marker ='.', c='k')
         # Set plot attributes
-        ax1.set_xlabel("Simulation #")
+        ax1.set_xlabel("Simulation Number")
         ax1.set_ylabel("Time to clear network (days)")
         ax1.legend(["Average", "Time per sim", "Number of infected computers"])
         ax1.set_title("%i Simulated Network Infections" % self.num_sims)
@@ -61,8 +61,8 @@ class Simulation:
         # Infected computers plot
         ax2.scatter(sims, num_infected_list, marker='.', c='k')
         # Set plot attributes
-        ax2.set_xlabel("Simulation #")
-        ax2.set_ylabel("# of computers")
+        ax2.set_xlabel("Simulation Number")
+        ax2.set_ylabel("NUmber of computers")
         ax2.set_title("Number of computers that have been infected")
 
         # Spread the subplots
