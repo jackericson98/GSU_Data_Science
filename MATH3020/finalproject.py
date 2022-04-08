@@ -63,7 +63,7 @@ class Simulation:
         # Set plot attributes
         ax2.set_xlabel("Simulation #")
         ax2.set_ylabel("# of computers")
-        ax2.set_title("Number of computers that have been infected at least once")
+        ax2.set_title("Number of computers that have been infected")
 
         # Spread the subplots
         plt.tight_layout()
